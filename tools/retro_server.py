@@ -91,7 +91,7 @@ def run(args, timeout=95):
         raise ValueError("YouTube tardó demasiado. Volvé a intentar con una lista más pequeña.") from None
     if result.returncode:
         error = result.stderr
-        lines = [line.strip() for line in error.splitlines() if line.strip().startswith(("ERROR:", "WARNING:")) or "[pot] PO Token Providers:" in line]
+        lines = [line.strip() for line in error.splitlines() if line.strip().startswith(("ERROR:", "WARNING:", "Failed while generating POT")) or "[pot] PO Token Providers:" in line or re.search(r"Retrieved a (?:player|gvs|subs) PO Token for", line)]
         detail = re.sub(r"https?://[^\s]+", "[link]", " | ".join(lines[-8:]) if lines else "yt-dlp exited with an error")[:2400]
         print("YouTube provider: " + detail, file=sys.stderr, flush=True)
         if "No module named yt_dlp" in error:
@@ -163,7 +163,7 @@ def stream_source(video_id, refresh=False):
             return entry
         args = [sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist", "--js-runtimes", "node", "--socket-timeout", "12", "--retries", "1", "--extractor-retries", "1", "--skip-download", "--dump-single-json", "-f", "bestaudio[ext=webm]/bestaudio[ext=m4a]"]
         if POT_HOME:
-            args += ["--verbose", "--extractor-args", "youtube:player_client=mweb;fetch_pot=always", "--extractor-args", "youtubepot-bgutilscript:server_home=" + POT_HOME]
+            args += ["--verbose", "--extractor-args", "youtube:player_client=mweb;fetch_pot=always;innertube_host=youtubei.googleapis.com", "--extractor-args", "youtubepot-bgutilscript:server_home=" + POT_HOME]
         args += ["--", "https://www.youtube.com/watch?v=" + video_id]
         with EXTRACTION_SLOTS:
             info = json.loads(run(args, timeout=90 if POT_HOME else 60))
