@@ -157,7 +157,10 @@ def stream_source(video_id, refresh=False):
         entry = STREAMS.get(video_id)
         if entry and not refresh and entry["expires"] > time.time() + 60:
             return entry
-        args = [sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist", "--js-runtimes", "node", "--socket-timeout", "12", "--retries", "1", "--extractor-retries", "1", "--skip-download", "--dump-single-json", "-f", "bestaudio[ext=webm]/bestaudio[ext=m4a]", "--", "https://www.youtube.com/watch?v=" + video_id]
+        args = [sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist", "--js-runtimes", "node", "--socket-timeout", "12", "--retries", "1", "--extractor-retries", "1", "--skip-download", "--dump-single-json", "-f", "bestaudio[ext=webm]/bestaudio[ext=m4a]"]
+        if API_ONLY:
+            args += ["--impersonate", "chrome"]
+        args += ["--", "https://www.youtube.com/watch?v=" + video_id]
         info = json.loads(run(args, timeout=60))
         if info.get("is_live") or not 0 < (info.get("duration") or 0) < 14400:
             raise ValueError("Elegí un video grabado de menos de cuatro horas.")
