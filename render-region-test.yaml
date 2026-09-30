@@ -1,0 +1,12 @@
+# Optional comparison service. Deploy this file as a separate Blueprint.
+services:
+  - type: web
+    name: frecuencia90-audio-frankfurt
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: RADIO_ALLOWED_ORIGINS
+        value: https://radio-blue-eight.vercel.app

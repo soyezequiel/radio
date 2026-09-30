@@ -40,7 +40,7 @@ Render Free tiene limites de ancho de banda y puede suspender un servicio con mu
 - `python tools/test_retro_server.py`: fuentes, streaming, Range, CORS, origenes y limites.
 - `npm run build`: frontend publicable en Vercel.
 
-La imagen instala yt-dlp actualizado del canal nightly al compilar para recoger correcciones recientes del extractor. `/api/health` informa la version, presencia de Node y revision desplegada. Para actualizarlo, usa Clear build cache & deploy en Render. El contenedor incluye Node 22 para resolver los desafios JavaScript de YouTube; no necesita FFmpeg porque retransmite audio WebM/M4A sin convertirlo.
+La imagen instala yt-dlp actualizado del canal nightly al compilar para recoger correcciones recientes del extractor. `/api/health` informa la version, presencia de Node, proveedor de tokens y revision desplegada. Para actualizarlo, usa Clear build cache & deploy en Render. El contenedor incluye Node desde la imagen versionada de BgUtils y su plugin 2.0.0 para generar tokens de reproduccion por video con el cliente mweb. Solo prepara un audio a la vez cuando ese proveedor esta configurado. No necesita FFmpeg porque retransmite audio WebM/M4A sin convertirlo.
 
 Documentacion: https://render.com/docs/free y https://render.com/docs/blueprint-spec
 
@@ -48,4 +48,4 @@ Frontend actual: https://radio-blue-eight.vercel.app/
 
 Backend actual: https://frecuencia90-audio.onrender.com
 
-Validacion del 30 de septiembre de 2026: salud y CORS funcionan desde Vercel, pero la extraccion de varios videos publicos falla con HTTP 403 en las solicitudes a YouTube. Actualizar a nightly y probar solicitudes compatibles con Chrome no resolvio ese rechazo. La conexion esta configurada; el audio de YouTube no esta operativo en este despliegue. Las demos, archivos propios y simulacion siguen disponibles.
+Validacion del 30 de septiembre de 2026: salud y CORS funcionan desde Vercel, pero la extraccion de varios videos publicos falla con HTTP 403 en las solicitudes a YouTube. Actualizar a nightly, probar solicitudes compatibles con Chrome, generar tokens por video y cambiar al otro host oficial de la API no resolvio ese rechazo. El mismo video si entrego audio desde la PC con la misma version del extractor, sin cookies ni cuenta. La conexion esta configurada; el audio de YouTube no esta operativo en este despliegue. Las demos, archivos propios y simulacion siguen disponibles. Ver [diagnostico y alternativas](README-youtube-diagnostico.md).

@@ -163,7 +163,7 @@ def stream_source(video_id, refresh=False):
             return entry
         args = [sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist", "--js-runtimes", "node", "--socket-timeout", "12", "--retries", "1", "--extractor-retries", "1", "--skip-download", "--dump-single-json", "-f", "bestaudio[ext=webm]/bestaudio[ext=m4a]"]
         if POT_HOME:
-            args += ["--verbose", "--extractor-args", "youtube:player_client=mweb;fetch_pot=always;innertube_host=youtubei.googleapis.com", "--extractor-args", "youtubepot-bgutilscript:server_home=" + POT_HOME]
+            args += ["--verbose", "--extractor-args", "youtube:player_client=mweb;fetch_pot=always", "--extractor-args", "youtubepot-bgutilscript:server_home=" + POT_HOME]
         args += ["--", "https://www.youtube.com/watch?v=" + video_id]
         with EXTRACTION_SLOTS:
             info = json.loads(run(args, timeout=90 if POT_HOME else 60))
