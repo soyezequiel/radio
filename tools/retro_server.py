@@ -27,6 +27,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = Path(os.environ.get("RADIO_CACHE_DIR", str(ROOT / "radio-cache")))
 API_ONLY = os.environ.get("RADIO_API_ONLY") == "1"
 ALLOWED_ORIGINS = frozenset(value.strip().rstrip("/") for value in os.environ.get("RADIO_ALLOWED_ORIGINS", "").split(",") if value.strip())
+POT_HOME = os.environ.get("RADIO_POT_HOME", "")
+EXTRACTION_SLOTS = threading.BoundedSemaphore(1 if POT_HOME else 3)
 RATE_LOCK = threading.Lock()
 POST_TIMES = {}
 VIDEO = re.compile(r"^[\w-]{11}$", re.ASCII)
@@ -89,8 +91,8 @@ def run(args, timeout=95):
         raise ValueError("YouTube tardó demasiado. Volvé a intentar con una lista más pequeña.") from None
     if result.returncode:
         error = result.stderr
-        lines = [line.strip() for line in error.splitlines() if line.strip().startswith(("ERROR:", "WARNING:"))]
-        detail = re.sub(r"https?://[^\s]+", "[link]", " | ".join(lines[-4:]) if lines else "yt-dlp exited with an error")[:1400]
+        lines = [line.strip() for line in error.splitlines() if line.strip().startswith(("ERROR:", "WARNING:")) or "[pot] PO Token Providers:" in line]
+        detail = re.sub(r"https?://[^\s]+", "[link]", " | ".join(lines[-8:]) if lines else "yt-dlp exited with an error")[:2400]
         print("YouTube provider: " + detail, file=sys.stderr, flush=True)
         if "No module named yt_dlp" in error:
             raise ValueError('Falta yt-dlp. Ejecutá Iniciar-radio.cmd para instalarlo automáticamente.')
@@ -160,8 +162,11 @@ def stream_source(video_id, refresh=False):
         if entry and not refresh and entry["expires"] > time.time() + 60:
             return entry
         args = [sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist", "--js-runtimes", "node", "--socket-timeout", "12", "--retries", "1", "--extractor-retries", "1", "--skip-download", "--dump-single-json", "-f", "bestaudio[ext=webm]/bestaudio[ext=m4a]"]
+        if POT_HOME:
+            args += ["--verbose", "--extractor-args", "youtube:player_client=mweb;fetch_pot=always", "--extractor-args", "youtubepot-bgutilscript:server_home=" + POT_HOME]
         args += ["--", "https://www.youtube.com/watch?v=" + video_id]
-        info = json.loads(run(args, timeout=60))
+        with EXTRACTION_SLOTS:
+            info = json.loads(run(args, timeout=90 if POT_HOME else 60))
         if info.get("is_live") or not 0 < (info.get("duration") or 0) < 14400:
             raise ValueError("Elegí un video grabado de menos de cuatro horas.")
         media_url = info.get("url", "")
@@ -413,7 +418,11 @@ class Handler(SimpleHTTPRequestHandler):
                 extractor_version = version("yt-dlp")
             except PackageNotFoundError:
                 extractor_version = None
-            self.json_response({"ok": True, "ffmpeg": bool(shutil.which("ffmpeg")), "maxStations": MAX_STATIONS, "ytDlp": extractor_version, "node": bool(shutil.which("node")), "revision": os.environ.get("RENDER_GIT_COMMIT", "local")})
+            try:
+                pot_version = version("bgutil-ytdlp-pot-provider")
+            except PackageNotFoundError:
+                pot_version = None
+            self.json_response({"ok": True, "ffmpeg": bool(shutil.which("ffmpeg")), "maxStations": MAX_STATIONS, "ytDlp": extractor_version, "node": bool(shutil.which("node")), "potProvider": pot_version, "potScript": bool(POT_HOME and (Path(POT_HOME) / "build/generate_once.js").is_file()), "revision": os.environ.get("RENDER_GIT_COMMIT", "local")})
         elif path.startswith("/api/media/"):
             self.serve_stream(path.rsplit("/", 1)[-1])
         elif path.startswith("/radio-cache/"):
