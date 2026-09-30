@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: frecuencia90-audio
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: RADIO_ALLOWED_ORIGINS
+        value: https://radio-blue-eight.vercel.app

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>Resonancia · Dentro de una radio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="./index.html" aria-label="Resonancia, inicio"><span class="brand-icon" aria-hidden="true">∿</span> RESONANCIA <span class="brand-divider">/</span> <span class="brand-topic">Laboratorio visual</span></a>
+    <span class="lesson-label">REDES · CODIFICACIÓN Y MODULACIÓN</span>
+  </header>
+  <main>
+    <div class="intro">
+      <div><p class="eyebrow">DENTRO DE UNA RADIO</p><h1>Muchas frecuencias. Una banda que predomina.</h1><p class="intro-description">Así seleccionan una señal la bobina y el capacitor, por su respuesta física.</p><p class="intro-description"><a href="radio.html" style="color:#168478">Abrir laboratorio con sonido: sintonizá tus tres músicas →</a></p><p class="intro-description"><a href="retro.html" style="color:#ab5836">Frecuencia 90: tu radio retro con música de YouTube →</a></p></div>
+      <span class="duration"><span aria-hidden="true">◷</span> 60 s <span>· 10 escenas</span></span>
+    </div>
+    <div class="workspace">
+      <section class="player" aria-label="Animación educativa del circuito LC">
+        <div class="signal-legend" aria-label="Colores de las frecuencias"><span><i class="dot a"></i>A · f₁ <small>500 kHz</small></span><span><i class="dot b"></i>B · f₂ <small>1.000 kHz</small></span><span><i class="dot c"></i>C · f₃ <small>1.500 kHz</small></span><span class="model-label">MODELO RLC</span></div>
+        <div class="stage-wrap" id="stage-wrap"><div id="stage"></div></div>
+        <div class="transport">
+          <div class="timeline-wrap"><input id="timeline" type="range" min="0" max="60" step="0.01" value="0" aria-label="Posición de la animación, en segundos"><div id="timeline-ticks" aria-hidden="true"></div></div>
+          <div class="transport-row">
+            <div class="play-actions"><button id="play" class="play" title="Pausar (espacio)" aria-label="Pausar">Ⅱ</button><button id="restart" class="icon-button" title="Volver al inicio" aria-label="Volver al inicio">↺</button><span id="time" class="time">00:00 <span>/ 01:00</span></span></div>
+            <div class="view-actions"><label class="speed-label" for="speed">Velocidad</label><select id="speed" aria-label="Velocidad de reproducción"><option value="0.5">0,5×</option><option value="0.75">0,75×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option></select><button id="fullscreen" class="icon-button fullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button></div>
+          </div>
+        </div>
+      </section>
+      <aside class="chapter-rail" aria-label="Escenas de la animación"><div class="rail-heading">EL RECORRIDO <span>01 — 10</span></div><nav id="chapters" aria-label="Ir a una escena"></nav><p class="rail-footnote">Las tres señales coexisten.<br>Los colores no cambian.</p></aside>
+    </div>
+    <div class="under-player"><p><span class="small-dot"></span>Ondas ralentizadas para observarlas · amplitudes relativas</p><button id="export" class="export-button">↓ Descargar animación <span>WebM</span></button></div>
+    <p id="export-status" role="status" aria-live="polite"></p>
+    <details class="model-notes"><summary>Sobre el modelo físico y las fuentes</summary><div><p>Ejemplo didáctico: RLC serie, con la salida medida sobre R. La antena se representa mediante una fuente de tensión equivalente. L = 100 μH, C ≈ 253 pF y R ≈ 78,5 Ω. La resistencia representa la carga y las pérdidas; por eso la resonancia tiene ancho finito. Las portadoras se dibujan ralentizadas y sin modulación para aislar la selección de banda.</p><p>La misma función H(f) = R / [R + j(2πfL − 1/(2πfC))] determina la amplitud y la fase de cada componente en las ondas, los espectros y la curva. En resonancia, X<sub>L</sub> = X<sub>C</sub>. La antena aporta energía para compensar las pérdidas. La energía de los campos se destaca para la componente resonante, dentro de la mezcla simultánea.</p><p>Fuentes: <a href="https://sites.ecse.rpi.edu/courses/static/ENGR-2300/_downloads/d0b7c40df2e3349a7db372d5771166a0/ENGR2300_Exp_02_M2K.pdf" target="_blank" rel="noopener">Rensselaer · Impedancia y filtros</a> y <a href="https://physicslabs.colorado.edu/courses/phys-3330/lab-guides/lab3/" target="_blank" rel="noopener">University of Colorado · Resonadores y filtros</a>.</p></div></details>
+  </main>
+  <footer>Una explicación visual de la sintonía <span>Resonancia → selección de banda → demodulación</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>

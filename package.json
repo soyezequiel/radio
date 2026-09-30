@@ -1,0 +1,12 @@
+{
+  "name": "frecuencia-90",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build-vercel.cjs",
+    "test": "node tools/test_retro.cjs && node tools/test_retro_preparation.cjs && node tools/test_retro_backend.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

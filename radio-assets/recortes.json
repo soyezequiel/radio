@@ -1,0 +1,41 @@
+[
+  {
+    "id": 0,
+    "title": "Todo Cambia",
+    "artist": "Mercedes Sosa",
+    "frequency": 900000,
+    "color": "#c76a38",
+    "source": "Mercedes Sosa - Todo Cambia (Videoclip).mp3",
+    "originalDuration": 287.497875,
+    "trimStart": 3.86525,
+    "trimEnd": 283.601312,
+    "duration": 279.736062,
+    "file": "radio-assets/emisora-1.mp3"
+  },
+  {
+    "id": 1,
+    "title": "This Love",
+    "artist": "Maroon 5",
+    "frequency": 1000000,
+    "color": "#168478",
+    "source": "Maroon 5 - This Love.mp3",
+    "originalDuration": 205.310839,
+    "trimStart": 1.031043,
+    "trimEnd": 202.860272,
+    "duration": 201.829229,
+    "file": "radio-assets/emisora-2.mp3"
+  },
+  {
+    "id": 2,
+    "title": "i'm upping my p(doom)",
+    "artist": "Audio proporcionado",
+    "frequency": 1100000,
+    "color": "#7764bf",
+    "source": "i'm upping my p(doom).mp3",
+    "originalDuration": 156.711474,
+    "trimStart": 0.0,
+    "trimEnd": 156.13746,
+    "duration": 156.13746,
+    "file": "radio-assets/emisora-3.mp3"
+  }
+]

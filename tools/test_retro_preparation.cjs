@@ -1,0 +1,34 @@
+'use strict';
+const assert = require('node:assert/strict');
+const Queue = require('../retro-preparation.js');
+const tick = () => new Promise(resolve => setImmediate(resolve));
+(async () => {
+  const queue = new Queue(2), started = [], releases = new Map();
+  let selected = 0, wanted = true, concurrent = 0, peak = 0;
+  const add = id => queue.run(async () => {
+    started.push(id); peak = Math.max(peak, ++concurrent);
+    await new Promise(resolve => releases.set(id, resolve));
+    concurrent--; return id;
+  }, () => selected === id ? -1 : id, () => wanted);
+  const tasks = Array.from({ length: 12 }, (_, i) => add(i));
+  const results = Promise.allSettled(tasks);
+  await tick();
+  assert.deepEqual(started, [0, 1]);
+  selected = 11;
+  releases.get(0)(); await tick();
+  assert.deepEqual(started, [0, 1, 11], 'Latest tuned station starts before old pending stations');
+  wanted = false; queue.drain();
+  releases.get(1)(); releases.get(11)();
+  const settled = await results; await tick();
+  assert.equal(peak, 2, 'Rapid tuning never exceeds two concurrent preparations');
+  assert.equal(settled.filter(r => r.status === 'fulfilled').length, 3);
+  assert.ok(settled.filter(r => r.status === 'rejected').every(r => r.reason.name === 'AbortError'));
+  assert.equal(queue.active, 0);
+  assert.equal(queue.pending.length, 0);
+  const errors = new Queue(1);
+  const failed = errors.run(() => { throw new Error('unavailable'); }, () => 0, () => true).catch(e => e.message);
+  const next = errors.run(() => 'ready', () => 1, () => true);
+  assert.equal(await failed, 'unavailable');
+  assert.equal(await next, 'ready', 'A failed station releases the next queue slot');
+  console.log('PASS: bounded preparations, live priority, cancellation and recovery');
+})().catch(error => { console.error(error); process.exitCode = 1; });

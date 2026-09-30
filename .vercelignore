@@ -1,0 +1,8 @@
+radio-cache/
+dist/
+node_modules/
+.git/
+.vercel/
+**/__pycache__/
+*.zip
+*.cmd
