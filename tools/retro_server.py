@@ -94,6 +94,8 @@ def run(args, timeout=95):
         print("YouTube provider: " + detail, file=sys.stderr, flush=True)
         if "No module named yt_dlp" in error:
             raise ValueError('Falta yt-dlp. Ejecutá Iniciar-radio.cmd para instalarlo automáticamente.')
+        if "HTTP Error 403" in error:
+            raise ProviderError("YouTube rechazó el acceso al audio desde el servidor (HTTP 403). Podés seguir usando la simulación con las emisoras demo o tus archivos de audio.", detail)
         if "Sign in" in error or "403" in error or "429" in error or "not available" in error or "Private" in error:
             raise ProviderError("YouTube no permite preparar este contenido en este momento. Probá otra emisora o usá un archivo de audio local.", detail)
         raise ProviderError("No se pudo leer ese contenido de YouTube. Comprobá que sea público y que tengas conexión.", detail)
@@ -158,8 +160,6 @@ def stream_source(video_id, refresh=False):
         if entry and not refresh and entry["expires"] > time.time() + 60:
             return entry
         args = [sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist", "--js-runtimes", "node", "--socket-timeout", "12", "--retries", "1", "--extractor-retries", "1", "--skip-download", "--dump-single-json", "-f", "bestaudio[ext=webm]/bestaudio[ext=m4a]"]
-        if API_ONLY:
-            args += ["--impersonate", "chrome"]
         args += ["--", "https://www.youtube.com/watch?v=" + video_id]
         info = json.loads(run(args, timeout=60))
         if info.get("is_live") or not 0 < (info.get("duration") or 0) < 14400:

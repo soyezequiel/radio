@@ -45,3 +45,7 @@ La imagen instala yt-dlp actualizado del canal nightly al compilar para recoger 
 Documentacion: https://render.com/docs/free y https://render.com/docs/blueprint-spec
 
 Frontend actual: https://radio-blue-eight.vercel.app/
+
+Backend actual: https://frecuencia90-audio.onrender.com
+
+Validacion del 30 de septiembre de 2026: salud y CORS funcionan desde Vercel, pero la extraccion de varios videos publicos falla con HTTP 403 en las solicitudes a YouTube. Actualizar a nightly y probar solicitudes compatibles con Chrome no resolvio ese rechazo. La conexion esta configurada; el audio de YouTube no esta operativo en este despliegue. Las demos, archivos propios y simulacion siguen disponibles.

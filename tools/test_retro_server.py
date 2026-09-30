@@ -48,6 +48,14 @@ class ProviderDiagnostics(unittest.TestCase):
         self.assertNotIn("token=secret", raised.exception.detail)
         self.assertNotIn("googlevideo.com", raised.exception.detail)
 
+    def test_403_explains_server_access_failure(self):
+        result = subprocess.CompletedProcess([], 1, stderr="WARNING: Unable to download API page: HTTP Error 403: Forbidden\nERROR: Failed to extract any player response\n")
+        with patch.object(server.subprocess, "run", return_value=result), patch("sys.stderr", new=io.StringIO()):
+            with self.assertRaises(server.ProviderError) as raised:
+                server.run(["yt-dlp"])
+        self.assertIn("HTTP 403", str(raised.exception))
+        self.assertIn("desde el servidor", str(raised.exception))
+
 
 class Jobs(unittest.TestCase):
     def setUp(self):

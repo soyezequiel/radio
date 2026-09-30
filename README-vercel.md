@@ -12,7 +12,7 @@ La portada `/` abre la radio retro. `/index.html` conserva la animacion y `/radi
 
 El build requiere Node 22 o superior y no tiene dependencias npm. Conecta directamente con Render mediante CORS y conserva Range para streaming. La URL del backend es publica; no agregues claves privadas en esa variable.
 
-Las demos y archivos propios funcionan sin backend. Sin `RADIO_API_URL`, el sitio explica que falta conectar el servidor para importar YouTube. El circuito, el limite de emisoras y la FFT siempre se procesan en el frontend. Los archivos propios son temporales; el dial se guarda por dominio.
+Las demos y archivos propios funcionan sin backend. Sin `RADIO_API_URL`, el build usa el servidor de Render configurado en este proyecto. El circuito, el limite de emisoras y la FFT siempre se procesan en el frontend. Los archivos propios son temporales; el dial se guarda por dominio.
 
 Consulta [README-render.md](README-render.md) para publicar el servidor y configurar `RADIO_ALLOWED_ORIGINS` con la URL de Vercel.
 
