@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, 'dist');
-const apiBase = (process.env.RADIO_API_URL || '').trim().replace(/\/$/, '');
+const apiBase = (process.env.RADIO_API_URL || 'https://frecuencia90-audio.onrender.com').trim().replace(/\/$/, '');
 if (apiBase) {
   const url = new URL(apiBase);
   if (url.protocol !== 'https:' || url.username || url.password || url.pathname !== '/' || url.search || url.hash) throw new Error('RADIO_API_URL must be an HTTPS origin without paths or credentials');

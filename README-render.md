@@ -9,7 +9,7 @@ Frontend: Vercel. Backend: Python y yt-dlp en Render. AM/FM, circuito y FFT se e
 3. La configuracion crea `frecuencia90-audio` con **plan free**, Docker y health check `/api/health`. No agregues disco ni servicios pagos.
 4. `render.yaml` ya configura `RADIO_ALLOWED_ORIGINS` con `https://radio-blue-eight.vercel.app`. Si cambias de dominio, actualiza esa variable sin ruta ni barra final. Si necesitas varios dominios, separalos por comas. Usa origenes concretos, sin comodines. Los dominios de previews se habilitan de forma explicita.
 5. Despliega y copia la URL asignada: `https://TU-BACKEND.onrender.com`.
-6. En Vercel > Settings > Environment Variables, agrega **RADIO_API_URL** con esa URL. Habilitala para Production y los previews que vayas a usar. Hace falta **Redeploy** porque se incorpora durante el build.
+6. El build de Vercel ya usa `https://frecuencia90-audio.onrender.com`. Si cambias de servicio, configura **RADIO_API_URL** y hace Redeploy.
 
 Si no usas Blueprint: crea **New > Web Service**, conecta el mismo repo, selecciona runtime **Docker**, plan **Free**, Dockerfile `./Dockerfile`, health check `/api/health` y configura `RADIO_ALLOWED_ORIGINS`.
 

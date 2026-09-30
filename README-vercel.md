@@ -7,7 +7,7 @@ La portada `/` abre la radio retro. `/index.html` conserva la animacion y `/radi
 1. Importa https://github.com/soyezequiel/radio en Vercel.
 2. Selecciona la carpeta de este proyecto como Root Directory.
 3. Usa Framework **Other**. `vercel.json` configura `npm run build` y la salida `dist`.
-4. Agrega la variable de entorno **RADIO_API_URL** con el origen HTTPS del servidor Render, por ejemplo `https://TU-BACKEND.onrender.com`.
+4. El build ya usa `https://frecuencia90-audio.onrender.com`. **RADIO_API_URL** es opcional y permite cambiar ese backend.
 5. Pulsa Deploy o Redeploy si el sitio ya existe.
 
 El build requiere Node 22 o superior y no tiene dependencias npm. Conecta directamente con Render mediante CORS y conserva Range para streaming. La URL del backend es publica; no agregues claves privadas en esa variable.
