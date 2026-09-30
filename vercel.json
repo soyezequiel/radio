@@ -3,10 +3,11 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [
+  "redirects": [
     {
       "source": "/",
-      "destination": "/retro.html"
+      "destination": "/retro.html",
+      "permanent": false
     }
   ],
   "headers": [
