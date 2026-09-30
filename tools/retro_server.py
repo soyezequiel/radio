@@ -11,6 +11,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 import argparse
 import json
+from importlib.metadata import version, PackageNotFoundError
 import os
 import re
 import shutil
@@ -88,8 +89,8 @@ def run(args, timeout=95):
         raise ValueError("YouTube tardó demasiado. Volvé a intentar con una lista más pequeña.") from None
     if result.returncode:
         error = result.stderr
-        lines = [line.strip() for line in error.splitlines() if line.strip().startswith("ERROR:")]
-        detail = re.sub(r"https?://[^\s]+", "[link]", lines[-1] if lines else "yt-dlp exited with an error")[:400]
+        lines = [line.strip() for line in error.splitlines() if line.strip().startswith(("ERROR:", "WARNING:"))]
+        detail = re.sub(r"https?://[^\s]+", "[link]", " | ".join(lines[-4:]) if lines else "yt-dlp exited with an error")[:1400]
         print("YouTube provider: " + detail, file=sys.stderr, flush=True)
         if "No module named yt_dlp" in error:
             raise ValueError('Falta yt-dlp. Ejecutá Iniciar-radio.cmd para instalarlo automáticamente.')
@@ -405,7 +406,11 @@ class Handler(SimpleHTTPRequestHandler):
         if not self.allow_cloud_request(path):
             return
         if path == "/api/health":
-            self.json_response({"ok": True, "ffmpeg": bool(shutil.which("ffmpeg")), "maxStations": MAX_STATIONS})
+            try:
+                extractor_version = version("yt-dlp")
+            except PackageNotFoundError:
+                extractor_version = None
+            self.json_response({"ok": True, "ffmpeg": bool(shutil.which("ffmpeg")), "maxStations": MAX_STATIONS, "ytDlp": extractor_version, "node": bool(shutil.which("node")), "revision": os.environ.get("RENDER_GIT_COMMIT", "local")})
         elif path.startswith("/api/media/"):
             self.serve_stream(path.rsplit("/", 1)[-1])
         elif path.startswith("/radio-cache/"):

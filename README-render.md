@@ -40,7 +40,7 @@ Render Free tiene limites de ancho de banda y puede suspender un servicio con mu
 - `python tools/test_retro_server.py`: fuentes, streaming, Range, CORS, origenes y limites.
 - `npm run build`: frontend publicable en Vercel.
 
-La imagen instala yt-dlp actual al compilar. Para actualizarlo, usa Clear build cache & deploy en Render. El contenedor incluye Node 22 para resolver los desafios JavaScript de YouTube; no necesita FFmpeg porque retransmite audio WebM/M4A sin convertirlo.
+La imagen instala yt-dlp actualizado del canal nightly al compilar para recoger correcciones recientes del extractor. `/api/health` informa la version, presencia de Node y revision desplegada. Para actualizarlo, usa Clear build cache & deploy en Render. El contenedor incluye Node 22 para resolver los desafios JavaScript de YouTube; no necesita FFmpeg porque retransmite audio WebM/M4A sin convertirlo.
 
 Documentacion: https://render.com/docs/free y https://render.com/docs/blueprint-spec
 
