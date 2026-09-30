@@ -43,6 +43,13 @@ class QueueBusy(ValueError):
     pass
 
 
+class ProviderError(ValueError):
+    def __init__(self, message, detail):
+        super().__init__(message)
+        self.detail = detail
+
+
+
 def canonical_source(value):
     value = value.strip()
     if not value or len(value) > 2000:
@@ -81,11 +88,14 @@ def run(args, timeout=95):
         raise ValueError("YouTube tardó demasiado. Volvé a intentar con una lista más pequeña.") from None
     if result.returncode:
         error = result.stderr
+        lines = [line.strip() for line in error.splitlines() if line.strip().startswith("ERROR:")]
+        detail = re.sub(r"https?://[^\s]+", "[link]", lines[-1] if lines else "yt-dlp exited with an error")[:400]
+        print("YouTube provider: " + detail, file=sys.stderr, flush=True)
         if "No module named yt_dlp" in error:
             raise ValueError('Falta yt-dlp. Ejecutá Iniciar-radio.cmd para instalarlo automáticamente.')
         if "Sign in" in error or "403" in error or "429" in error or "not available" in error or "Private" in error:
-            raise ValueError("YouTube no permite preparar este contenido en este momento. Probá otra emisora o usá un archivo de audio local.")
-        raise ValueError("No se pudo leer ese contenido de YouTube. Comprobá que sea público y que tengas conexión.")
+            raise ProviderError("YouTube no permite preparar este contenido en este momento. Probá otra emisora o usá un archivo de audio local.", detail)
+        raise ProviderError("No se pudo leer ese contenido de YouTube. Comprobá que sea público y que tengas conexión.", detail)
     return result.stdout
 
 
@@ -198,6 +208,8 @@ def job_result(key, function, *args):
     except Exception as error:
         with LOCK:
             JOBS[key].update(state="error", error=str(error) if isinstance(error, ValueError) else "No se pudo completar la carga. Volvé a intentar.", finished=time.time())
+            if isinstance(error, ProviderError):
+                JOBS[key]["providerDetail"] = error.detail
 
 
 def submit_job(function, *args, audio_id=None):
