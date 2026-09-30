@@ -9,6 +9,7 @@ import json
 import threading
 import time
 import io
+import subprocess
 import retro_server as server
 
 
@@ -34,6 +35,18 @@ class Sources(unittest.TestCase):
     def test_audio_id_is_not_a_path(self):
         for value in ("../../secret", "abc\n", "C:/example", "--option"):
             self.assertIsNone(server.VIDEO.fullmatch(value))
+
+
+class ProviderDiagnostics(unittest.TestCase):
+    def test_preserves_network_failure_without_exposing_signed_links(self):
+        result = subprocess.CompletedProcess([], 1, stderr="WARNING: Unable to download API page: HTTP Error 429 at https://audio.googlevideo.com/a?token=secret\nERROR: Failed to extract any player response\n")
+        with patch.object(server.subprocess, "run", return_value=result), patch("sys.stderr", new=io.StringIO()):
+            with self.assertRaises(server.ProviderError) as raised:
+                server.run(["yt-dlp"])
+        self.assertIn("HTTP Error 429", raised.exception.detail)
+        self.assertIn("Failed to extract any player response", raised.exception.detail)
+        self.assertNotIn("token=secret", raised.exception.detail)
+        self.assertNotIn("googlevideo.com", raised.exception.detail)
 
 
 class Jobs(unittest.TestCase):
